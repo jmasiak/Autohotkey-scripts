@@ -1,9 +1,3 @@
-/*
-Author:      Maciej Słojewski, mslonik, http://mslonik.pl
-Purpose:     Facilitate normal operation for company desktop.
-Description: Hotkeys and hotstrings for my everyday professional activities and office cockpit.
-License:     GNU GPL v.3
-*/
 ;                 I N T R O D U C T I O N
 ;~ Simple script used to get diacritic letters (https://en.wikipedia.org/wiki/Diacritic) without usage of AltGr key (right alt, see https://en.wikipedia.org/wiki/AltGr_key#Polish for further details):
 ;~ * double press a key configured to correspond to diacritic key, e.g. in Polish ee converts into ę
@@ -12,7 +6,7 @@ License:     GNU GPL v.3
 ;~ * optionally sounds and tooltips are generated upon key presses.
 ;~ 
 ;~ WHY:
-;~ a. "programmers keyboard" layout and Diacritic with old ANSI 101 keys keyboard, where AltGr is unergonomically shifted to the right side of keyboard is cumbersome and decrease touch typing speed,
+;~ a. "programmers keyboard" layout and diacritic with old ANSI 101 keys keyboard, where AltGr is unergonomically shifted to the right side of keyboard is cumbersome and decrease touch typing speed,
 ;~ b. all other "programmers keyboard" when one doesn't want to press AltGr or use just one hand to press all letters of alphabet.
 ;~
 ;~ Author: Maciej Słojewski, 2020-02-27
@@ -40,7 +34,7 @@ ProcessInputArgs()
 IniRead, _AmericanLayout,                   % A_ScriptDir . "\" . A_Args[1], Global, AmericanLayout
 IniRead, _AllTooltips,                      % A_ScriptDir . "\" . A_Args[1], Global, AllTooltips
 IniRead, _AllBeeps,                         % A_ScriptDir . "\" . A_Args[1], Global, AllBeeps
-IniRead, _DiacriticWord,                    % A_ScriptDir . "\" . A_Args[1], Global, DiacriticWord
+IniRead, _DiacriticWord,                     % A_ScriptDir . "\" . A_Args[1], Global, DiactricWord
 IniRead, _DoubleWord,                       % A_ScriptDir . "\" . A_Args[1], Global, DoubleWord
 
 ;~ switch to AmericanLayout (neutral)?
@@ -110,7 +104,7 @@ Loop, %DiacriticSectionCounter%
     Hotstring(":x:"  . _ShiftBaseKey,                                 func("SingleLetter").bind(_BaseKey_SoundBeep_Frequency, _BaseKey_SoundBeep_Duration, _Tooltip))
     }
 
-~BackSpace:: ; this line prevent the following sequence from triggering: ao › aoo › aó › aó{Backspace} › a › ao › ó
+~BackSpace:: ; this line prevent the following sequence from triggering: ao > aoo > aó > aó{Backspace} > a > ao > ó
     ;~ MsgBox, Backspace
     Hotstring("Reset")
 return
@@ -266,11 +260,11 @@ if (A_Args.Length() = 0)
     {
     IfExist, *.ini
         {
-        MsgBox, 16, %A_ScriptName%, At least one *.ini file found in directory %A_WorkingDir%`n but current script (%A_ScriptName%) was run without any arguments. One argument`, the name of .ini file`, is obligatory. Therefore script will now exit.
+        MsgBox, 16, %ApplicationName%.ahk, At least one *.ini file found in directory %A_WorkingDir%`n but current script (%ApplicationName%.ahk) was run without any arguments. One argument`, the name of .ini file`, is obligatory. Therefore script will now exit.
         ExitApp, 0
         }
     IfNotExist, *.ini
-        MsgBox, 308, %A_ScriptName%, No input arguments found and no *.ini files found in directory %A_ScriptDir%. Expected a single *.ini file. Do you want to create Default.ini configuration template? Script will exit after the default configuration .ini file is created.
+        MsgBox, 308, %ApplicationName%.ahk, No input arguments found and no *.ini files found in directory %A_WorkingDir%. Expected a single *.ini file. Do you want to create Default.ini configuration template? Script will exit after the default configuration file Default%ApplicationName%ConfigFile.ini is created.
     IfMsgBox, No
         ExitApp, 0
     IfMsgBox, Yes
@@ -306,12 +300,12 @@ Double_SoundBeep_Duration = 150 ; The duration of the sound, in milliseconds
 else if (A_Args.Length() = 1)
     {
     IniRead, _Language,                         % A_ScriptDir . "\" . A_Args[1], Global, Language
-    MsgBox, 64, Diacritic.ahk, % "Input argument: " . A_Args[1] . ". Found language: " . _Language . "."
+    TrayTip, Diacritic.ahk, % "Input argument: " . A_Args[1] . ". Found language: " . _Language . ".",5, 0x1
+    ;~ MsgBox, 64, Diacritic.ahk, % "Input argument: " . A_Args[1] . ". Found language: " . _Language . "."
     }
 else if (A_Args.Length() > 1)
     {
     MsgBox, 48, Diacritic.ahk, % "Too many input arguments: " . A_Args.Length() . ". Expected just one, *.ini." 
-    ExitApp, 0
     }
 }    
 
